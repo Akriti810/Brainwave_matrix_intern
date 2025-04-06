@@ -1,68 +1,78 @@
 class ATM:
-    def __init__(self, input_func=None):
+    def __init__(self):
         self.users = {
             '1234': {'pin': '1111', 'balance': 5000, 'transactions': []},
             '5678': {'pin': '2222', 'balance': 3000, 'transactions': []}
         }
         self.current_user = None
-        self.input_func = input_func if input_func else self.default_input
-    
-    def default_input(self, prompt):
-        print(prompt)
-        return "1234" if "card" in prompt.lower() else "1111"
-    
+
     def authenticate_user(self):
-        card_number = self.input_func("Enter your card number:")
-        if card_number in self.users:
-            pin = self.input_func("Enter your PIN:")
-            if self.users[card_number]['pin'] == pin:
-                self.current_user = card_number
-                print("\nLogin successful!\n")
-                return True
-            else:
-                print("Incorrect PIN.")
+        card_number = input("Enter your card number: ")
+        pin = input("Enter your PIN: ")
+        user = self.users.get(card_number)
+
+        if user and user['pin'] == pin:
+            self.current_user = card_number
+            print("\n Login successful!\n")
+            return True
         else:
-            print("Card number not found.")
-        return False
-    
+            print(" Invalid card number or PIN.\n")
+            return False
+
     def check_balance(self):
-        print(f"Your current balance is: ${self.users[self.current_user]['balance']}")
-    
+        balance = self.users[self.current_user]['balance']
+        print(f" Your current balance is: ${balance}")
+
     def withdraw_cash(self):
-        amount = float(self.input_func("Enter withdrawal amount: "))
-        if 0 < amount <= self.users[self.current_user]['balance']:
-            self.users[self.current_user]['balance'] -= amount
-            self.users[self.current_user]['transactions'].append(f"Withdrew ${amount}")
-            print(f"Success! You withdrew ${amount}. Remaining balance: ${self.users[self.current_user]['balance']}")
-        else:
-            print("Invalid amount or insufficient balance.")
-    
+        try:
+            amount = float(input("Enter withdrawal amount: "))
+            if 0 < amount <= self.users[self.current_user]['balance']:
+                self.users[self.current_user]['balance'] -= amount
+                self.users[self.current_user]['transactions'].append(f"Withdrew ${amount}")
+                print(f" Withdrawn ${amount}. New balance: ${self.users[self.current_user]['balance']}")
+            else:
+                print(" Insufficient funds or invalid amount.")
+        except ValueError:
+            print(" Invalid input. Please enter a number.")
+
     def deposit_cash(self):
-        amount = float(self.input_func("Enter deposit amount: "))
-        if amount > 0:
-            self.users[self.current_user]['balance'] += amount
-            self.users[self.current_user]['transactions'].append(f"Deposited ${amount}")
-            print(f"Success! You deposited ${amount}. New balance: ${self.users[self.current_user]['balance']}")
-        else:
-            print("Invalid amount.")
-    
+        try:
+            amount = float(input("Enter deposit amount: "))
+            if amount > 0:
+                self.users[self.current_user]['balance'] += amount
+                self.users[self.current_user]['transactions'].append(f"Deposited ${amount}")
+                print(f" Deposited ${amount}. New balance: ${self.users[self.current_user]['balance']}")
+            else:
+                print(" Deposit amount must be greater than zero.")
+        except ValueError:
+            print(" Invalid input. Please enter a number.")
+
     def show_transactions(self):
-        print("\nTransaction History:")
-        for transaction in self.users[self.current_user]['transactions']:
-            print(transaction)
-    
+        print("\n Transaction History:")
+        transactions = self.users[self.current_user]['transactions']
+        if transactions:
+            for tx in transactions:
+                print(f" - {tx}")
+        else:
+            print("No transactions available.")
+
     def logout(self):
-        print("Logging out...")
+        print(" Logging out...")
         self.current_user = None
-    
+
     def run(self):
         if not self.authenticate_user():
             return
-        
+
         while True:
-            print("\n1. Check Balance\n2. Withdraw Cash\n3. Deposit Cash\n4. Transaction History\n5. Exit")
-            choice = self.input_func("Choose an option: ")
-            
+            print("\n ATM Menu:")
+            print("1. Check Balance")
+            print("2. Withdraw Cash")
+            print("3. Deposit Cash")
+            print("4. Transaction History")
+            print("5. Exit")
+            choice = input("Choose an option: ")
+
             if choice == '1':
                 self.check_balance()
             elif choice == '2':
@@ -77,6 +87,7 @@ class ATM:
             else:
                 print("Invalid choice. Try again.")
 
+# Run the ATM system
 if __name__ == "__main__":
     atm = ATM()
     atm.run()
