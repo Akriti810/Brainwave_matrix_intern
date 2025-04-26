@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import messagebox, ttk
 import sqlite3
 
-# Initialize DataBase
+
 def init_db():
     conn = sqlite3.connect('inventory_gui.db')
     c = conn.cursor()
@@ -65,7 +65,7 @@ def update_product(product_id, name, quantity, price):
     conn.commit()
     conn.close()
 
-# GUI
+
 class InventoryApp:
     def __init__(self, master):
         self.master = master
@@ -95,7 +95,7 @@ class InventoryApp:
 
         tk.Label(self.master, text="Inventory Management").grid(row=0, column=0, columnspan=4)
 
-       
+
         tk.Label(self.master, text="Name").grid(row=1, column=0)
         self.name_entry = tk.Entry(self.master)
         self.name_entry.grid(row=1, column=1)
@@ -110,13 +110,13 @@ class InventoryApp:
 
         tk.Button(self.master, text="Add", command=self.add_product_gui).grid(row=4, column=0, columnspan=2)
 
-        
+      
         self.tree = ttk.Treeview(self.master, columns=("ID", "Name", "Qty", "Price"), show='headings')
         for col in ("ID", "Name", "Qty", "Price"):
             self.tree.heading(col, text=col)
         self.tree.grid(row=5, column=0, columnspan=4)
 
-      
+        
         tk.Button(self.master, text="Edit", command=self.edit_product).grid(row=6, column=0)
         tk.Button(self.master, text="Delete", command=self.delete_selected).grid(row=6, column=1)
         tk.Button(self.master, text="Refresh", command=self.populate_products).grid(row=6, column=2)
